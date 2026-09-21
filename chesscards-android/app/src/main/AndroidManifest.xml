@@ -3,7 +3,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <application
         android:allowBackup="true"
-        android:label="Chess & Cards Academy"
+        android:label="Chess &amp; Cards Academy"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="false">
         <activity
