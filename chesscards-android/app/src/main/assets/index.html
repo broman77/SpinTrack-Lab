@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#090b10">
+<title>Chess & Cards Academy</title>
+<style>
+:root{--bg:#090b10;--panel:#11151d;--panel2:#171c26;--line:#252d3a;--text:#f4f7fb;--muted:#8993a5;--accent:#7c5cff;--accent2:#35d6a3;--danger:#ff667d;--light:#dce2ea;--dark:#667080}
+*{box-sizing:border-box}html,body{margin:0;background:radial-gradient(circle at 15% 0,#201b3f 0,transparent 35%),var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,sans-serif;min-height:100%}
+body{padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+button,select{font:inherit}button{cursor:pointer}
+header{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:rgba(9,11,16,.94);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.brand{display:flex;gap:10px;align-items:center}.mark{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(135deg,var(--accent),#aa6bff);font-size:24px}.brand b{font-size:14px;letter-spacing:.08em}.brand small{display:block;color:var(--muted);font-size:10px;letter-spacing:.16em}
+.tabs{display:flex;gap:6px}.tab{border:1px solid var(--line);background:var(--panel);color:var(--muted);padding:9px 11px;border-radius:10px}.tab.active{background:#24203d;color:#fff;border-color:#4f437e}
+main{max-width:1100px;margin:auto;padding:14px}.hidden{display:none!important}
+.card{background:linear-gradient(180deg,rgba(24,29,40,.96),rgba(15,19,27,.96));border:1px solid var(--line);border-radius:18px;padding:14px;box-shadow:0 18px 60px rgba(0,0,0,.28)}
+.toolbar{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}.field label{display:block;color:var(--muted);font-size:11px;margin-bottom:5px}.field select,.action{width:100%;border:1px solid var(--line);background:#0d1118;color:#fff;border-radius:12px;padding:11px}
+.action{background:linear-gradient(135deg,var(--accent),#6847d8);border:0;font-weight:700}.action.secondary{background:#151a24;border:1px solid var(--line);color:#d6dbe4}
+.statusbar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}.status{font-weight:700}.engine{font-size:11px;color:var(--muted);text-align:right}.dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#e0a52e;margin-right:5px}.dot.ok{background:var(--accent2)}.dot.bad{background:var(--danger)}
+.board-wrap{width:min(94vw,620px);margin:auto;border-radius:16px;overflow:hidden;border:8px solid #171b24;box-shadow:0 20px 50px rgba(0,0,0,.4)}.board{display:grid;grid-template-columns:repeat(8,1fr);aspect-ratio:1}.sq{border:0;padding:0;position:relative;display:grid;place-items:center;font-size:clamp(28px,8vw,58px);line-height:1}.sq.light{background:#d8dee7}.sq.dark{background:#748092}.sq.sel{outline:4px solid #f5ca55;outline-offset:-4px}.sq.last{box-shadow:inset 0 0 0 100px rgba(124,92,255,.24)}.sq.target:after{content:"";width:24%;height:24%;border-radius:50%;background:rgba(10,15,22,.36);position:absolute}.sq.capture:after{content:"";position:absolute;inset:8%;border:4px solid rgba(255,71,104,.55);border-radius:50%}.piece.white{color:#fff;text-shadow:0 1px 2px #000,0 0 2px #000}.piece.black{color:#11151b;text-shadow:0 1px 1px #fff5}
+.bottom{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}.moves{margin-top:12px;max-height:150px;overflow:auto;color:#c8cfda;font-size:13px;line-height:1.8}.moves span{display:inline-block;min-width:76px}.fen{margin-top:8px;color:#717d90;font-size:10px;word-break:break-all}.note{margin-top:10px;padding:10px 12px;border-radius:12px;background:#101722;border:1px solid #223043;color:#aab4c4;font-size:12px;line-height:1.45}
+.cards-head h2{margin:4px 0}.cards-head p{color:var(--muted);margin:0 0 14px;font-size:13px}.safe{padding:10px 12px;border-radius:12px;background:#10211d;border:1px solid #1e4d41;color:#b7e7d8;font-size:12px;margin-bottom:14px}
+.hand{display:flex;gap:7px;justify-content:center;flex-wrap:nowrap;margin:18px 0}.playing{width:min(17vw,78px);aspect-ratio:.72;background:#f8f8f6;color:#111;border-radius:10px;border:1px solid #d2d2cf;padding:7px;font-weight:800;font-size:clamp(16px,5vw,26px);box-shadow:0 8px 18px rgba(0,0,0,.25)}.playing.red{color:#d91f3b}.choices{display:grid;grid-template-columns:1fr 1fr;gap:8px}.choice{padding:11px 8px;border:1px solid var(--line);background:#111722;color:#d8dee8;border-radius:11px}.choice.active{border-color:var(--accent);background:#231f3a}.feedback{min-height:48px;margin-top:12px;padding:11px;border-radius:12px;background:#0e131b;color:#aeb8c8;font-size:13px;line-height:1.45}
+.rankings{margin-top:16px}.rankings summary{color:#cbd2dd}.rankings ol{padding-left:23px;color:#929dad;font-size:12px;line-height:1.7}
+@media(min-width:820px){#chessView{display:grid;grid-template-columns:240px 1fr 250px;gap:14px;align-items:start}.toolbar{display:block}.toolbar .field,.toolbar .action{margin-bottom:10px}.bottom{grid-template-columns:1fr}.sidecard{display:block!important}.board-wrap{width:min(54vw,620px)}#cardsView{max-width:760px;margin:auto}}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand"><div class="mark">♞</div><div><b>CHESS & CARDS</b><small>ACADEMY</small></div></div>
+  <div class="tabs"><button class="tab active" data-view="chess">Шахматы</button><button class="tab" data-view="cards">Карты</button></div>
+</header>
+<main>
+<section id="chessView">
+  <div class="card">
+    <div class="toolbar">
+      <div class="field"><label>Ваш цвет</label><select id="color"><option value="w">Белые</option><option value="b">Чёрные</option></select></div>
+      <div class="field"><label>Сила бота</label><select id="elo"><option>2200</option><option>2400</option><option>2600</option><option>2800</option><option>3000</option><option value="max">MAX</option></select></div>
+      <button class="action" id="newGame">Новая партия</button>
+      <button class="action secondary" id="undo">Вернуть ход</button>
+    </div>
+    <div class="note">Минимальный уровень — 2200 Elo. Stockfish загружается через интернет при запуске шахматного режима.</div>
+  </div>
+
+  <div class="card">
+    <div class="statusbar"><div class="status" id="status">Загрузка шахмат…</div><div class="engine" id="engineState"><span class="dot"></span>движок</div></div>
+    <div class="board-wrap"><div id="board" class="board"></div></div>
+    <div class="bottom">
+      <button class="action secondary" id="flip">Перевернуть доску</button>
+      <button class="action secondary" id="copyFen">Скопировать FEN</button>
+    </div>
+  </div>
+
+  <div class="card sidecard">
+    <b>Ходы</b><div id="moves" class="moves">Партия ещё не началась.</div><div id="fen" class="fen"></div>
+  </div>
+</section>
+
+<section id="cardsView" class="hidden">
+  <div class="card">
+    <div class="cards-head"><h2>Тренажёр комбинаций</h2><p>Определи комбинацию по пяти картам.</p></div>
+    <div class="safe"><b>Учебный режим.</b> Без денег, ставок и советов по азартной игре.</div>
+    <div id="hand" class="hand"></div>
+    <div id="choices" class="choices"></div>
+    <div class="bottom"><button class="action" id="check">Проверить</button><button class="action secondary" id="newHand">Новая рука</button></div>
+    <div id="feedback" class="feedback">Выберите ответ.</div>
+    <details class="rankings"><summary>Старшинство комбинаций</summary><ol><li>Стрит-флеш</li><li>Каре</li><li>Фулл-хаус</li><li>Флеш</li><li>Стрит</li><li>Тройка</li><li>Две пары</li><li>Пара</li><li>Старшая карта</li></ol></details>
+  </div>
+</section>
+</main>
+
+<script type="module">
+const qs=s=>document.querySelector(s), qsa=s=>Array.from(document.querySelectorAll(s));
+let ChessClass=null, game=null, player='w', orientation='w', selected=null, targets=[], last=null, thinking=false;
+let engine=null, engineReady=false, bestResolve=null, waiters=[];
+const pieces={w:{k:'♔',q:'♕',r:'♖',b:'♗',n:'♘',p:'♙'},b:{k:'♚',q:'♛',r:'♜',b:'♝',n:'♞',p:'♟'}};
+
+function setEngineState(text,mode){qs('#engineState').innerHTML='<span class="dot '+(mode||'')+'"></span>'+text}
+async function initChess(){
+  if(ChessClass)return;
+  try{
+    const mod=await import('https://cdn.jsdelivr.net/npm/chess.js@1.4.0/+esm');
+    ChessClass=mod.Chess; game=new ChessClass(); render(); update();
+    qs('#status').textContent='Ваш ход';
+  }catch(e){qs('#status').textContent='Нет соединения для загрузки шахмат';setEngineState('ошибка','bad')}
+}
+async function initEngine(){
+  if(engineReady||engine)return;
+  setEngineState('загрузка…','');
+  try{
+    const r=await fetch('https://cdn.jsdelivr.net/npm/stockfish@19.0.0/bin/stockfish-19-asm.js');
+    if(!r.ok)throw new Error('HTTP '+r.status);
+    const code=await r.text(), url=URL.createObjectURL(new Blob([code],{type:'text/javascript'}));
+    engine=new Worker(url);
+    engine.onmessage=e=>handleEngine(String(e.data||''));
+    engine.onerror=()=>setEngineState('ошибка','bad');
+    send('uci'); await waitFor('uciok',20000); send('isready'); await waitFor('readyok',20000);
+    engineReady=true;setEngineState('Stockfish 19 готов','ok');
+  }catch(e){engine=null;engineReady=false;setEngineState('ошибка загрузки','bad');qs('#status').textContent='Не удалось загрузить Stockfish'}
+}
+function send(x){if(engine)engine.postMessage(x)}
+function waitFor(token,timeout){return new Promise((res,rej)=>{const w={token,res};waiters.push(w);setTimeout(()=>{waiters=waiters.filter(x=>x!==w);rej(new Error('timeout'))},timeout)})}
+function handleEngine(line){
+  waiters.slice().forEach(w=>{if(line.includes(w.token)){waiters=waiters.filter(x=>x!==w);w.res(line)}});
+  if(line.startsWith('bestmove ')&&bestResolve){const r=bestResolve;bestResolve=null;r(line.split(/\s+/)[1])}
+}
+async function engineMove(){
+  if(!game||game.isGameOver()||game.turn()===player)return;
+  thinking=true;selected=null;targets=[];render();qs('#status').textContent='Stockfish думает…';
+  await initEngine(); if(!engineReady){thinking=false;return}
+  const e=qs('#elo').value;
+  send('stop');
+  if(e==='max')send('setoption name UCI_LimitStrength value false');
+  else{send('setoption name UCI_LimitStrength value true');send('setoption name UCI_Elo value '+e)}
+  send('position fen '+game.fen());
+  const ms=e==='max'?5000:Math.max(2200,Number(e))>=2800?4200:Number(e)>=2500?3300:2600;
+  const bm=await new Promise((res,rej)=>{bestResolve=res;send('go movetime '+ms);setTimeout(()=>{if(bestResolve){send('stop');setTimeout(()=>{if(bestResolve){bestResolve=null;rej(new Error('timeout'))}},1500)}},ms+3000)}).catch(()=>null);
+  if(bm&&bm!=='(none)'){const m=game.move({from:bm.slice(0,2),to:bm.slice(2,4),promotion:bm[4]||'q'});if(m)last={from:m.from,to:m.to}}
+  thinking=false;render();update();
+}
+function orderSquares(){
+  const files=orientation==='w'?['a','b','c','d','e','f','g','h']:['h','g','f','e','d','c','b','a'];
+  const ranks=orientation==='w'?['8','7','6','5','4','3','2','1']:['1','2','3','4','5','6','7','8'];
+  return ranks.flatMap(r=>files.map(f=>f+r));
+}
+function sqColor(s){return(((s.charCodeAt(0)-97)+(Number(s[1])-1))%2===1)?'light':'dark'}
+function render(){
+  if(!game)return;const b=qs('#board');b.innerHTML='';
+  const tmap=new Map(targets.map(m=>[m.to,m]));
+  orderSquares().forEach(s=>{
+    const el=document.createElement('button');el.className='sq '+sqColor(s);
+    if(s===selected)el.classList.add('sel');if(last&&(s===last.from||s===last.to))el.classList.add('last');
+    if(tmap.has(s))el.classList.add(game.get(s)?'capture':'target');
+    const p=game.get(s);if(p){const sp=document.createElement('span');sp.className='piece '+(p.color==='w'?'white':'black');sp.textContent=pieces[p.color][p.type];el.appendChild(sp)}
+    el.onclick=()=>clickSquare(s);b.appendChild(el);
+  })
+}
+function clickSquare(s){
+  if(!game||thinking||game.isGameOver()||game.turn()!==player)return;
+  const p=game.get(s);
+  if(selected){
+    const lm=targets.find(x=>x.to===s);
+    if(lm){const m=game.move({from:selected,to:s,promotion:lm.promotion||'q'});if(m){last={from:m.from,to:m.to};selected=null;targets=[];render();update();setTimeout(engineMove,120);return}}
+  }
+  if(p&&p.color===player){selected=s;targets=game.moves({square:s,verbose:true});render()}else{selected=null;targets=[];render()}
+}
+function update(){
+  if(!game)return;
+  qs('#fen').textContent=game.fen();const h=game.history();
+  qs('#moves').innerHTML=h.length?h.map((m,i)=>'<span>'+(i%2===0?(Math.floor(i/2)+1)+'. ':'')+m+'</span>').join(''):'Партия ещё не началась.';
+  let st=game.turn()===player?'Ваш ход':'Ход Stockfish';
+  if(game.isCheckmate())st=game.turn()===player?'Мат. Stockfish победил.':'Мат. Вы победили!';
+  else if(game.isDraw())st='Ничья';
+  else if(game.isCheck())st+=' — шах';
+  qs('#status').textContent=st;
+}
+async function reset(){
+  await initChess();if(!game)return;game.reset();player=qs('#color').value;orientation=player;selected=null;targets=[];last=null;render();update();await initEngine();if(player==='b')setTimeout(engineMove,200)
+}
+qs('#newGame').onclick=reset;
+qs('#color').onchange=reset;
+qs('#elo').onchange=()=>{if(game)update()};
+qs('#flip').onclick=()=>{orientation=orientation==='w'?'b':'w';render()};
+qs('#undo').onclick=()=>{if(!game||thinking)return;if(game.history().length){game.undo();if(game.history().length&&game.turn()!==player)game.undo();last=null;selected=null;targets=[];render();update()}};
+qs('#copyFen').onclick=async()=>{if(game)try{await navigator.clipboard.writeText(game.fen());qs('#status').textContent='FEN скопирован'}catch(e){}};
+
+qsa('.tab').forEach(x=>x.onclick=()=>{qsa('.tab').forEach(y=>y.classList.remove('active'));x.classList.add('active');const c=x.dataset.view==='chess';qs('#chessView').classList.toggle('hidden',!c);qs('#cardsView').classList.toggle('hidden',c);if(c){initChess();initEngine()}});
+
+const ranks=['2','3','4','5','6','7','8','9','10','J','Q','K','A'], suits=[['♠',false],['♥',true],['♦',true],['♣',false]];
+const names=['Стрит-флеш','Каре','Фулл-хаус','Флеш','Стрит','Тройка','Две пары','Пара','Старшая карта'];
+let currentHand=[],selectedChoice=null,streak=0;
+function newHand(){
+  const deck=[];ranks.forEach((r,ri)=>suits.forEach((s,si)=>deck.push({r,ri,si,s:s[0],red:s[1]})));
+  for(let i=deck.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[deck[i],deck[j]]=[deck[j],deck[i]]}
+  currentHand=deck.slice(0,5);selectedChoice=null;qs('#feedback').textContent='Выберите ответ.';
+  qs('#hand').innerHTML=currentHand.map(c=>'<div class="playing '+(c.red?'red':'')+'">'+c.r+'<br>'+c.s+'</div>').join('');
+  qs('#choices').innerHTML=names.map(n=>'<button class="choice">'+n+'</button>').join('');
+  Array.from(qs('#choices').children).forEach((b,i)=>b.onclick=()=>{Array.from(qs('#choices').children).forEach(x=>x.classList.remove('active'));b.classList.add('active');selectedChoice=names[i]});
+}
+function handName(h){
+  const counts={},vals=h.map(c=>c.ri).sort((a,b)=>a-b);h.forEach(c=>counts[c.ri]=(counts[c.ri]||0)+1);
+  let uniq=[...new Set(vals)],straight=false;if(uniq.length===5){if(uniq[4]-uniq[0]===4)straight=true;if(JSON.stringify(uniq)===JSON.stringify([0,1,2,3,12]))straight=true}
+  const flush=h.every(c=>c.si===h[0].si), cs=Object.values(counts).sort((a,b)=>b-a);
+  if(straight&&flush)return 'Стрит-флеш';if(cs[0]===4)return 'Каре';if(cs[0]===3&&cs[1]===2)return 'Фулл-хаус';if(flush)return 'Флеш';if(straight)return 'Стрит';if(cs[0]===3)return 'Тройка';if(cs[0]===2&&cs[1]===2)return 'Две пары';if(cs[0]===2)return 'Пара';return 'Старшая карта'
+}
+qs('#check').onclick=()=>{if(!selectedChoice){qs('#feedback').textContent='Сначала выберите комбинацию.';return}const right=handName(currentHand);if(selectedChoice===right){streak++;qs('#feedback').textContent='Верно: '+right+'. Серия: '+streak}else{streak=0;qs('#feedback').textContent='Правильный ответ: '+right+'. Попробуйте следующую руку.'}};
+qs('#newHand').onclick=newHand;
+newHand();initChess();initEngine();
+</script>
+</body>
+</html>
